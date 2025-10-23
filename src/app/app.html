@@ -1,0 +1,54 @@
+<div class="container">
+  <h1>🎧 Listening Trainer</h1>
+
+  <div class="row stats">
+    <span>✔️ Aprendidas: {{ learnedCount() }}</span>
+    <span>⏳ Faltando: {{ remainingCount() }}</span>
+    <span>Total tentativas: {{ attempts }}</span>
+    <span>🔥 Streak: {{ streak }}</span>
+  </div>
+
+  <div class="row prefs">
+  <label>
+  <input
+    type="checkbox"
+    [checked]="trainOnlyUnlearned()"
+    (change)="toggleMode($any($event.target).checked)" />
+  Não aprendidas
+  <br>
+  <br>
+</label>
+
+    <button class="ghost" (click)="resetProgress()">Resetar progresso</button>
+  </div>
+
+  <ng-container *ngIf="current; else doneTpl">
+    <button (click)="play()">▶️ Ouvir</button>
+
+    <input type="text"
+           [formControl]="answer"
+           (keyup.enter)="check()"
+           placeholder="Digite a palavra..." />
+
+    <div class="buttons">
+      <button (click)="check()">Checar</button>
+      <button (click)="skip()">Pular</button>
+       <button class="ghost" (click)="showAnswer()" [disabled]="revealed || !current">👁️ Mostrar palavra</button>
+    </div>
+
+    <div class="feedback correct" *ngIf="state === 'correct'">✅ Correto!</div>
+    <div class="feedback wrong" *ngIf="state === 'wrong'">❌ Errado, tente novamente.</div>
+
+    <!-- bloco que exibe a palavra quando revelada -->
+<div class="reveal" *ngIf="revealed">
+  Resposta: <strong>{{ current }}</strong>
+</div>
+  </ng-container>
+
+  <ng-template #doneTpl>
+    <p class="done" *ngIf="trainOnlyUnlearned()">🎉 Você marcou todas como aprendidas!
+      <br />
+      Desmarque “Treinar apenas não aprendidas” para revisar tudo.
+    </p>
+  </ng-template>
+</div>
